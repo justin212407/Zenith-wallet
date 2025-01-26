@@ -1,16 +1,49 @@
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+
+const NETWORK_CONFIG = {
+  rpcUrl: 'https://open-campus-codex-sepolia.drpc.org',
+};
+
 function App() {
+  const [wallet, setWallet] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const [provider, setProvider] = useState(null);
+
+  useEffect(() => {
+    const setupProvider = async () => {
+      const newProvider = new ethers.providers.JsonRpcProvider(NETWORK_CONFIG.rpcUrl);
+      setProvider(newProvider);
+    };
+    setupProvider();
+  }, []);
+
+  const createWallet = async () => {
+    const newWallet = ethers.Wallet.createRandom().connect(provider);
+    setWallet(newWallet);
+    const balance = await provider.getBalance(newWallet.address);
+    setBalance(ethers.utils.formatEther(balance));
+  };
+
   return (
-    <div>
-      {/* TODO 1: Add error handling in the `createWallet` function to handle potential provider issues.
-TODO 2: Implement a button to reset the wallet and clear the balance and address states.
-TODO 3: Improve the UI for displaying the balance to include loading states when fetching the balance.
-TODO 4: Add validation for the recipient address input to ensure it is a valid Ethereum address.
-TODO 5: Enhance the `sendEDU` function to display transaction progress (e.g., "Transaction in progress..." message).
-TODO 6: Refactor the QR Scanner component into a separate reusable component for better code organization.
-TODO 7: Add functionality to display recent transactions for the wallet using the Blockscout explorer API.
-TODO 8: Create a dark mode toggle and apply styles conditionally throughout the app.
-TODO 9: Include a tooltip or info icon next to the "Balance" section to explain what EDU tokens are.
-TODO 10: Add unit tests for the wallet creation, sending transaction, and balance fetching functionalities. */}
+    <div className="bg-gray-900 text-white min-h-screen p-6">
+      <div className="max-w-md mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
+        <h1 className="text-center text-2xl font-bold mb-4">EDU Wallet</h1>
+        {!wallet ? (
+          <button
+            onClick={createWallet}
+            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg"
+          >
+            Create New Wallet
+          </button>
+        ) : (
+          <div className="bg-gray-700 p-4 rounded-lg">
+            <p className="text-lg font-bold">Balance</p>
+            <p className="text-2xl font-semibold">{balance} EDU</p>
+            <p className="text-sm mt-2 break-all">Address: {wallet.address}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
