@@ -1,9 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
 
 const NETWORK_CONFIG = {
-  rpcUrl: 'https://open-campus-codex-sepolia.drpc.org',
+  rpcUrl: "https://open-campus-codex-sepolia.drpc.org",
 };
+
+const sendEDU = async () => {
+  if (!wallet) return alert("Create a wallet first.");
+  if (!sendAddress || !sendAmount) return alert("Fill in all fields.");
+
+  try {
+    const tx = await wallet.sendTransaction({
+      to: sendAddress,
+      value: ethers.utils.parseEther(sendAmount),
+    });
+    await tx.wait();
+    alert("Transaction Successful!");
+    const balance = await provider.getBalance(wallet.address);
+    setBalance(ethers.utils.formatEther(balance));
+  } catch (error) {
+    alert("Transaction Failed: " + error.message);
+  }
+};
+
+// Adding input fields and send button
+return (
+  <div>
+    {/* Existing wallet code */}
+    <input
+      className="w-full p-3 mt-4 rounded-lg bg-gray-700"
+      placeholder="Recipient Address"
+      value={sendAddress}
+      onChange={(e) => setSendAddress(e.target.value)}
+    />
+    <input
+      className="w-full p-3 mt-2 rounded-lg bg-gray-700"
+      type="number"
+      placeholder="Amount to Send"
+      value={sendAmount}
+      onChange={(e) => setSendAmount(e.target.value)}
+    />
+    <button
+      onClick={sendEDU}
+      className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg mt-4"
+    >
+      Send EDU
+    </button>
+  </div>
+);
 
 function App() {
   const [wallet, setWallet] = useState(null);
@@ -12,7 +56,9 @@ function App() {
 
   useEffect(() => {
     const setupProvider = async () => {
-      const newProvider = new ethers.providers.JsonRpcProvider(NETWORK_CONFIG.rpcUrl);
+      const newProvider = new ethers.providers.JsonRpcProvider(
+        NETWORK_CONFIG.rpcUrl
+      );
       setProvider(newProvider);
     };
     setupProvider();
@@ -44,6 +90,25 @@ function App() {
           </div>
         )}
       </div>
+      <input
+        className="w-full p-3 mt-4 rounded-lg bg-gray-700"
+        placeholder="Recipient Address"
+        value={sendAddress}
+        onChange={(e) => setSendAddress(e.target.value)}
+      />
+      <input
+        className="w-full p-3 mt-2 rounded-lg bg-gray-700"
+        type="number"
+        placeholder="Amount to Send"
+        value={sendAmount}
+        onChange={(e) => setSendAmount(e.target.value)}
+      />
+      <button
+        onClick={sendEDU}
+        className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg mt-4"
+      >
+        Send EDU
+      </button>
     </div>
   );
 }
