@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import QrScanner from "react-qr-scanner";
 import Tooltip from "./components/Tooltip";
 import { motion } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NETWORK_CONFIG = {
   name: "Open Campus Codex Sepolia",
@@ -30,7 +32,7 @@ function App() {
         );
         setProvider(newProvider);
       } catch (error) {
-        showNotification("Failed to connect to provider", "error");
+        toast.error("Failed to connect to provider");
       }
     };
     setupProvider();
@@ -49,7 +51,7 @@ function App() {
         const balance = await provider.getBalance(wallet.address);
         setBalance(ethers.utils.formatEther(balance));
       } catch (error) {
-        showNotification("Failed to fetch balance", "error");
+        toast.error("Failed to fetch balance");
       } finally {
         setIsLoadingBalance(false);
       }
@@ -60,9 +62,9 @@ function App() {
     try {
       const newWallet = ethers.Wallet.createRandom().connect(provider);
       setWallet(newWallet);
-      showNotification("New wallet created!", "success");
+      toast.success("New wallet created!");
     } catch (error) {
-      showNotification("Failed to create wallet", "error");
+      toast.error("Failed to create wallet");
     }
   };
 
@@ -70,18 +72,18 @@ function App() {
     if (window.confirm("Are you sure you want to reset the wallet?")) {
       setWallet(null);
       setBalance(null);
-      showNotification("Wallet reset successful!", "success");
+      toast.success("Wallet reset successful!");
     }
   };
 
   const sendEDU = async () => {
     if (!wallet || !sendAddress || !sendAmount) {
-      showNotification("Please fill in all fields", "error");
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (!ethers.utils.isAddress(sendAddress)) {
-      showNotification("Invalid recipient address", "error");
+      toast.error("Invalid recipient address");
       return;
     }
 
@@ -91,18 +93,18 @@ function App() {
         value: ethers.utils.parseEther(sendAmount),
       });
 
-      showNotification("Transaction in progress...", "info");
+      toast.info("Transaction in progress...");
       await tx.wait();
-      showNotification(`Sent ${sendAmount} EDU to ${sendAddress}`, "success");
+      toast.success(`Sent ${sendAmount} EDU to ${sendAddress}`);
       updateBalance();
     } catch (error) {
-      showNotification("Transaction failed", "error");
+      toast.error("Transaction failed");
     }
   };
 
   const copyWalletAddress = () => {
     navigator.clipboard.writeText(wallet.address);
-    showNotification("Wallet address copied to clipboard!", "success");
+    toast.success("Wallet address copied to clipboard!");
   };
 
   const handleScan = (data) => {
@@ -114,35 +116,19 @@ function App() {
 
   const handleError = (err) => {
     console.error(err);
-    showNotification("QR scan error. Please try again.", "error");
-  };
-
-  const showNotification = (message, type) => {
-    const notification = document.createElement("div");
-    notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${
-      type === "success"
-        ? "bg-green-500"
-        : type === "error"
-        ? "bg-red-500"
-        : "bg-blue-500"
-    }`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-      notification.remove();
-    }, 3000);
+    toast.error("QR scan error. Please try again.");
   };
 
   return (
-    <div className="bg-gradient-to-br from-black via-purple-900 to-gray-900 text-white min-h-screen p-6 font-mono">
-      <div className="max-w-md mx-auto bg-purple-950 rounded-lg shadow-lg p-6 border border-purple-800">
+    <div className="bg-gradient-to-br from-black via-purple-900 to-gray-900 text-white min-h-screen p-4 sm:p-6 font-mono">
+      <div className="max-w-md mx-auto bg-purple-950 rounded-lg shadow-lg p-4 sm:p-6 border border-purple-800">
         <motion.h1
-          className="text-center text-3xl font-bold mb-4 text-purple-400"
+          className="text-center text-2xl sm:text-3xl font-bold mb-4 text-purple-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Phantom Crypt
+          Zenith
         </motion.h1>
 
         {!wallet ? (
@@ -155,7 +141,7 @@ function App() {
             Create New Wallet
           </motion.button>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="bg-purple-900 p-4 rounded-lg border border-purple-700">
               <p className="text-lg font-bold">Balance</p>
               <p className="text-2xl font-semibold">
@@ -268,6 +254,11 @@ function App() {
           </div>
         )}
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
     </div>
   );
 }
