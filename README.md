@@ -3,7 +3,15 @@
 Zenith Wallet is a Telegram Mini App designed to provide a seamless, user-friendly cryptocurrency wallet experience. It allows users to create, manage, and interact with their wallets, send and receive EDU tokens, and enjoy real-time balance updates.
 
 ## Live Demo
+
 [Zenith Wallet](https://open-campus-edu-app.vercel.app)
+
+| Image | Description | Image | Description |
+|-------|-------------|-------|-------------|
+| <img src="https://github.com/user-attachments/assets/a331c0ce-6fd8-4afc-a396-5bcf25f038b5" width="300"> | Wallet creation and management interface | <img src="https://github.com/user-attachments/assets/079ab265-bfd6-4495-85f8-31e4ed9918cb" width="300"> | Sending and receiving EDU tokens |
+| <img src="https://github.com/user-attachments/assets/3cb38795-773e-49d0-9d14-9d9977fcc870" width="300"> | QR code scanning for wallet addresses | <img src="https://github.com/user-attachments/assets/fbde7faf-13b6-4b46-b405-5b33b6a3595b" width="300"> | Real-time balance updates |
+
+PPT - [Zenith-Simplifying-Cryptocurrency-Wallets.pptx](https://github.com/user-attachments/files/18562179/Zenith-Simplifying-Cryptocurrency-Wallets.pptx)
 
 ## Technology Stack
 - Frontend: React.js  
@@ -97,4 +105,3 @@ http://localhost:3000
 ---
 
 Enjoy using Zenith Wallet and contribute to the future of decentralized education!
-
